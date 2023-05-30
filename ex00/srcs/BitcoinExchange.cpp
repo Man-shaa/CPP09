@@ -6,7 +6,7 @@
 /*   By: msharifi <msharifi@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/30 15:10:19 by msharifi          #+#    #+#             */
-/*   Updated: 2023/05/30 19:26:05 by msharifi         ###   ########.fr       */
+/*   Updated: 2023/05/30 19:31:08 by msharifi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -96,7 +96,6 @@ int	BitcoinExchange::recupInput(char *av) const
 		else
 		{
 			rate = getExchangeRate(date);
-			std::cout << value << std::endl;
 			std::cout << date << " => " << value << " = " << rate * value << std::endl; 
 		}
 		// Fonction multliplier _dataMap->value et value pour avoir le total et le print
