@@ -6,7 +6,7 @@
 /*   By: msharifi <msharifi@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/31 19:11:19 by msharifi          #+#    #+#             */
-/*   Updated: 2023/06/01 17:25:57 by msharifi         ###   ########.fr       */
+/*   Updated: 2023/06/01 19:51:57 by msharifi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,39 +27,6 @@ int	fillVect(std::vector<int> &vect, int ac, char **av)
 	return (0);
 }
 
-std::vector<int>	*FillVectTab(std::vector<int> &vect, int *vectTabSize)
-{
-	*vectTabSize = vect.size();
-	if (*vectTabSize % 2 != 0)
-		(*vectTabSize)++;
-	*vectTabSize /= 2;
-	std::vector<int>	*vectTab = new std::vector<int>[*vectTabSize];
-	for (int i = 0; i < *vectTabSize; i ++)
-	{
-		vectTab[i].push_back(vect.back());
-		vect.pop_back();
-
-		if (vect.empty() == false)
-		{
-			vectTab[i].push_back(vect.back());
-			vect.pop_back();
-		}
-	}
-	return (vectTab);
-}
-
-void	sortPair(std::vector<int> *vectTab, int vectTabSize)
-{
-	for (int i = 0; i < vectTabSize; i++)
-	{
-		for (int j = 0; j < static_cast<int>(vectTab[i].size()) && vectTab[i].empty() == false; j++)
-		{
-			if (vectTab[i].front() > vectTab[i].back())
-				std::swap(vectTab[i][0], vectTab[i][1]);
-		}
-	}
-}
-
 void	printVector(const std::vector<int> vect)
 {
 	for (std::vector<int>::const_iterator it = vect.begin(); it != vect.end(); it++)
@@ -68,13 +35,63 @@ void	printVector(const std::vector<int> vect)
 
 }
 
-void	printVectorTab(const std::vector<int> *vectTab, int vectTabSize)
+void	divideVector(std::vector<int> &vect, int left, int right)
 {
-	for (int i = 0; i < vectTabSize; i++) {
-		std::cout << "Vecteur " << i << ": ";
-		for (int j = 0; j < static_cast<int>(vectTab[i].size()); ++j) {
-			std::cout << vectTab[i][j] << " ";
-		}
-		std::cout << std::endl;
+	if (left < right)
+	{
+		int	mid = (left + right) / 2;
+		divideVector(vect, left, mid);
+		divideVector(vect, mid + 1, right);
+		mergeVector(vect, left, mid, right);
 	}
 }
+
+void	mergeVector(std::vector<int> &vect, int left, int mid, int right)
+{
+	int	leftVectSize = mid - left + 1;
+	int	rightVectSize = right - mid;
+
+	std::vector<int>	leftVect(leftVectSize);
+	std::vector<int>	rightVect(rightVectSize);
+
+	// Creer deux vecteurs correspondants au deux parties de la sequence qu'on veut merge (deux pairs)
+	
+	for (int i = 0; i < leftVectSize; i++)
+		leftVect[i] = vect[left + i];
+	for (int i = 0; i < rightVectSize; i++)
+		rightVect[i] = vect[mid + i + 1];
+
+	// Merge les 2 vecteurs ensembles en les triant par insertion
+
+	int	i = 0, j = 0, k = left;
+	while (i < leftVectSize && j < rightVectSize)
+	{
+		if (leftVect[i] < rightVect[j])
+		{
+			vect[k] = leftVect[i];
+			i++;
+		}
+		else
+		{
+			vect[k] = rightVect[j];
+			j++;
+		}
+		k++;
+	}
+
+	// Copie du reste de la sequence
+
+	while (i < leftVectSize)
+	{
+		vect[k] = leftVect[i];
+		k++;
+		i++;
+	}
+	while (j < rightVectSize)
+	{
+		vect[k] = rightVect[j];
+		k++;
+		j++;
+	}
+}
+
